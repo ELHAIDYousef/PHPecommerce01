@@ -17,7 +17,7 @@ session_start();
 </head>
 <body class=" min-vh-100">
 
-<?php include 'includes/nav.php'?>
+<?php include 'includes/nav.php' ?>
 
 <!-- Centered Form Container -->
 <div class="container mt-5 d-flex justify-content-center ">

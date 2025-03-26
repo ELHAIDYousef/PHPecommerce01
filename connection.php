@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 ?>
 
 <!doctype html>
@@ -17,27 +18,49 @@ session_start();
 </head>
 <body class=" min-vh-100">
 
-<?php include 'includes/nav.php'?>
+<!-- includes/nav.php -->
+
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="/Php_Storm/ecommerce/connection.php">Ecommerce</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <a href="connection.php" <button class="btn btn-primary ms-auto ">Login</button></a>
+        </div>
+    </div>
+</nav>
 
 <!-- Centered Form Container -->
 <div class="container mt-5 d-flex justify-content-center ">
     <div class="card shadow p-4 mt-5">
 
+
+
         <?php
             if(isset($_POST['login'])){
-                $login = $_POST['login'];
+                $login = $_POST['login_input'];
                 $password = $_POST['password'];
+
 
                 if(!empty($login) && !empty($password)){
                     require_once 'includes/db.php';
-                    $sqlState = $pdo->prepare("SELECT count(*) FROM utilisateur
+                    $sqlState = $pdo->prepare("SELECT * FROM utilisateur
                                                         WHERE login = ? 
                                                         AND password = ?");
 
-                    if ($sqlState->execute([$login, $password])){
-                        echo count($sqlState->fetchAll());
+                    if($sqlState->execute([$login, $password])){
+                        if($sqlState->rowCount() >= 1){
+                            echo '1';
+                            $_SESSION['Utilisateur'] = $sqlState->fetch();
+                            header('Location: admin.php');
+                        }else{
+                            $_SESSION['message'] = "<div class='alert alert-danger text-center'>Login ou mot de passe incorrect!!.</div>";
+                            header("Location: " . $_SERVER['PHP_SELF']);
+                            exit();
+                        }
                     }
-
 
                 }else{
                     $_SESSION['message'] = "<div class='alert alert-danger text-center'>Veuillez remplir tous les champs.</div>";
@@ -57,7 +80,7 @@ session_start();
             <!-- Login Field -->
             <div class="input-group mb-3">
                 <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" class="form-control" name="login" placeholder="Login " >
+                <input type="text" class="form-control" name="login_input" placeholder="Login " >
             </div>
 
 
